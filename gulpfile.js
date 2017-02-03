@@ -2,10 +2,10 @@ var gulp = require('gulp'),
 	rename = require('gulp-rename'),
  	sourcemaps = require('gulp-sourcemaps'),
 	babel = require('gulp-babel'),
-	react = require('gulp-react'),
     concat = require('gulp-concat'),
 	sass = require('gulp-sass'),
-	uglify = require('gulp-uglify');
+	uglify = require('gulp-uglify'),
+	browserify = require('gulp-browserify');
 
 var jsSources = ['source/js/**/*.js'],
     sassMainSources = ['source/scss/main/**/*.scss'],
@@ -30,10 +30,13 @@ gulp.task('thirdPartiesCss', function() {
 gulp.task('js', function() {
   	gulp.src(jsSources)
 		.pipe(sourcemaps.init())
-		.pipe(react())
 		.pipe(babel({
-			presets: ['es2015']
+			presets: ['es2015', 'react']
 		}))
+		.pipe(browserify({
+			  insertGlobals : true,
+			  debug : !gulp.env.production
+			}))
 		.pipe(concat('main.js'))
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest(outputDirJs));
