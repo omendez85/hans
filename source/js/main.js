@@ -1,123 +1,108 @@
-import React from 'react'; // ES6
-import ReactDOM from 'react-dom'; // ES6
+// var ButtonRemove = React.createClass({
+//   render: function() {
+//     return (
+//         <button onClick={this.props.removeItem.bind(this, this.props.indexItem)} className="btn btn-danger glyphicon glyphicon-remove" aria-hidden="true" title="Eliminar"></button>
+//       );
+//   }
+// });
 
-var ButtonRemove = React.createClass({
-  handleClick: function(e) {
-    e.preventDefault();
-    this.props.removeItem(this.props.indexItem);
-  },
-  render: function() {
+var BtnAction = function (props) {
+    var classes = ' btn-primary btn glyphicon ' + props.class;
     return (
-        <button onClick={this.handleClick} className="btn btn-danger glyphicon glyphicon-remove" aria-hidden="true" title="Eliminar"></button>
+        <button onClick={props.btnActionFunction.bind(props, props.indexItem)} className={classes}  aria-hidden="true">{props.label}</button>
       );
-  }
-});
+};
 
-var ButtonAddItem = React.createClass({
-  handleClick: function(e) {
-    e.preventDefault();
-    this.props.addItem();
-  },
-  render: function() {
-    return (
-        <button onClick={this.handleClick} className="btn btn-primary glyphicon glyphicon-plus" aria-hidden="true"> Agregar Etiqueta</button>
-      );
-  }
-});
+// var ButtonAddItem = React.createClass({
+//   render: function() {
+//     return (
+//         <button onClick={this.props.addItem} className="btn btn-primary glyphicon glyphicon-plus" aria-hidden="true"> Agregar Etiqueta</button>
+//       );
+//   }
+// });
 
 var Item = React.createClass({
-  mixins: [LinkedStateMixin],
-  updateFieldValue: function(e) {
-      this.props.updateItem(this.props.index, e.currentTarget );
-  },
+
   render: function() {
-    var removeBtn = <ButtonRemove removeItem={this.props.removeItem} indexItem={this.props.index} />
-    console.log(this.props.item)
-
-    var valueItemCode = this.linkState('itemCode');
-    var handleChange = function(e) {
-        valueLink.requestChange(e.target.value);
-    };
-
+    var removeBtn = <BtnAction btnActionFunction={this.props.removeItem} indexItem={this.props.index} class="btn-danger glyphicon-remove"/>
     return (
-
         <li className="row show-grid" data-index={this.props.index}>
             <div className="col-sm-1">
                 {removeBtn}
             </div>
             <div className="col-sm-1">
                 <input type="text"
-                    onKeyUp={this.handleChange}
+                    onChange={this.props.updateItem.bind(this, this.props.index)}
                     value={this.props.item.itemCode}
                     data-state-name="itemCode"
                     name={ "item-code-" + this.props.index } />
             </div>
             <div className="col-sm-1">
                 <input type="text"
-                    onKeyUp={this.updateFieldValue}
+                    onChange={this.updateFieldValue}
                     value={this.props.item.itemSize}
                     data-state-name="itemSize"
                     name={ "item-size-" + this.props.index } />
             </div>
             <div className="col-sm-1">
                 <input type="text"
-                    onKeyUp={this.updateFieldValue}
+                    onChange={this.updateFieldValue}
                     value={this.props.item.itemMaterial}
                     data-state-name="itemMaterial"
                     name={ "item-material-" + this.props.index } />
             </div>
             <div className="col-sm-1">
                 <input type="text"
-                    onKeyUp={this.updateFieldValue}
+                    onChange={this.updateFieldValue}
                     value={this.props.item.itemForm}
                     data-state-name="itemForm"
                     name={ "item-form-" + this.props.index } />
             </div>
             <div className="col-sm-1">
                 <input type="text"
-                    onKeyUp={this.updateFieldValue}
+                    onChange={this.updateFieldValue}
                     value={this.props.item.itemAmount}
                     data-state-name="itemAmount"
                     name={ "item-amount-" + this.props.index } />
             </div>
             <div className="col-sm-1">
                 <input type="text"
-                    onKeyUp={this.updateFieldValue}
+                    onChange={this.updateFieldValue}
                     value={this.props.item.itemAmountBox}
                     data-state-name="itemAmountBox"
                     name={ "item-amount-box-" + this.props.index } />
             </div>
             <div className="col-sm-1">
                 <input type="text"
-                    onKeyUp={this.updateFieldValue}
+                    onChange={this.updateFieldValue}
                     value={this.props.item.itemAmountRolls}
                     data-state-name="itemAmountRolls"
                     name={ "item-amount-rolls-" + this.props.index } />
             </div>
             <div className="col-sm-1">
                 <input type="text"
-                    onKeyUp={this.updateFieldValue}
+                    onChange={this.updateFieldValue}
                     value={this.props.item.itemUnitsPerRoll}
                     data-state-name="itemUnitsPerRoll"
                     name={ "item-units-per-roll-" + this.props.index } />
             </div>
             <div className="col-sm-1">
                 <input type="text"
-                    onKeyUp={this.updateFieldValue}
+                    onChange={this.updateFieldValue}
                     value={this.props.item.itemType}
                     data-state-name="itemType"
                     name={ "item-type-" + this.props.index } />
             </div>
             <div className="col-sm-1">
                 <input type="text"
-                    onKeyUp={this.updateFieldValue}
+                    onChange={this.updateFieldValue}
                     value={this.props.item.itemCavity}
                     data-state-name="itemCavity"
                     name={ "item-cavity-" + this.props.index } />
             </div>
             <div className="col-sm-1">
                 <input type="text"
-                    onKeyUp={this.updateFieldValue}
+                    onChange={this.updateFieldValue}
                     value={this.props.item.itemAmountInk}
                     data-state-name="itemAmountInk"
                     name={ "item-amount-ink-" + this.props.index } />
@@ -181,13 +166,11 @@ var Main = React.createClass({
     this.setState( {items: this.state.items  } );
   },
 
-  updateItem: function(indexItem, input) {
-
+  updateItem: function(indexItem, event) {
       var item = this.state.items[indexItem];
-      item[input.getAttribute('data-state-name')] = input.value;
+      item[event.target.getAttribute('data-state-name')] = event.target.value;
       this.state.items[indexItem] = item;
       this.setState( { items:  this.state.items } );
-
   },
   render: function() {
 
@@ -195,11 +178,10 @@ var Main = React.createClass({
     var itemsList = this.state.items.map( function(item, i) {
       if( item !== null) {
         return <Item
-                 updateItem={that.updateItem}
+                 updateItem={that.updateItem.bind(that)}
                  removeItem={that.removeItem}
-                 item={item}
-                 index={i}
-                 key={i}
+                 item={that.state.items[i]}
+                 index={i} key={i}
                 />
       }
     });
@@ -211,7 +193,7 @@ var Main = React.createClass({
 
           <ul>
             <li>
-              <ButtonAddItem addItem={this.addItem}/>
+              <BtnAction btnActionFunction={this.addItem} label={"Add Item"} class="glyphicon-plus"/>
             </li>
             <li className="row show-grid">
               <div className="col-sm-1"></div>
